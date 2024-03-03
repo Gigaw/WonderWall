@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, SafeAreaView } from "react-native";
 import { TextInput, Button } from "react-native-paper";
 import Spacer from "../components/Spacer.js";
 
-function SignIn({ navigation }) {
+const SignIn = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -32,7 +32,7 @@ function SignIn({ navigation }) {
       </View>
     </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {

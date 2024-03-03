@@ -16,12 +16,9 @@ const validationSchema = Yup.object().shape({
     .required("Repeat password is required"),
 });
 
-function SignUp() {
-  const [email, setEmail] = useState("");
+const SignUp = () => {
   const [passwordEyeOpened, setPasswordEyeOpened] = useState(false);
   const [passwordRepeatEyeOpened, setPasswordRepeatEyeOpened] = useState(false);
-  const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-  const obj1 = { values: { email: "", password: "" }, name: "John", age: 30 };
 
   const { values, errors, handleBlur, handleChange } = useFormik({
     initialValues: { email: "", password: "", name: "", repeatPassword: "" },
@@ -30,7 +27,6 @@ function SignUp() {
       console.log(values);
     },
   });
-  // console.log(values);
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.centerContainer}>
