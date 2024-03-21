@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, View, SafeAreaView } from "react-native";
 import { TextInput, Button } from "react-native-paper";
+
 import Spacer from "../components/Spacer.js";
 
 const SignIn = ({ navigation }) => {

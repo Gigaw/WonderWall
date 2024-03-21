@@ -1,9 +1,10 @@
+import { useFormik } from "formik";
 import React, { useState } from "react";
 import { StyleSheet, Text, View, SafeAreaView } from "react-native";
 import { TextInput, Button, HelperText } from "react-native-paper";
-import Spacer from "../components/Spacer.js";
-import { useFormik } from "formik";
 import * as Yup from "yup";
+
+import Spacer from "../components/Spacer.js";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Required"),
@@ -95,7 +96,7 @@ const SignUp = () => {
       </View>
     </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
