@@ -10,10 +10,11 @@ import {
   Image,
 } from "react-native";
 import { TextInput, Searchbar } from "react-native-paper";
-import * as Yup from "yup";
 import Carousel from "react-native-reanimated-carousel";
-import Spacer from "../../components/Spacer";
+import * as Yup from "yup";
+
 import HomeTabs from "./Tabs";
+import Spacer from "../../components/Spacer";
 const windowHeight = Dimensions.get("window").height;
 const width = Dimensions.get("window").width;
 const validationSchema = Yup.object().shape({
@@ -38,7 +39,7 @@ export default function Home() {
   const [autoPlay, setAutoPlay] = React.useState(false);
   const [autoPlayReverse, setAutoPlayReverse] = React.useState(false);
 
-  const data = React.useRef([...new Array(6).keys()]).current;
+  const data = React.useRef([...new Array(4).keys()]).current;
   const viewCount = 5;
   return (
     <SafeAreaView style={{ flex: 1 }}>

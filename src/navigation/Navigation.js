@@ -5,15 +5,17 @@ import React from "react";
 import TabNavigation from "./TabNavigation";
 import SignIn from "../screens/SignIn";
 import SignUp from "../screens/SignUp";
+import useAuthStore from "../stores/auth";
 
 const Stack = createNativeStackNavigator();
 
 const Navigation = () => {
-  const isSignedIn = true;
+  const isAuth = useAuthStore((state) => state.isAuth);
+
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        {!isSignedIn ? (
+        {!isAuth ? (
           <>
             <Stack.Screen name="SignIn" component={SignIn} />
             <Stack.Screen name="SignUp" component={SignUp} />
