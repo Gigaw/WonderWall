@@ -1,5 +1,6 @@
 import React from "react";
-import { View, Text, StyleSheet, Image, Button } from "react-native";
+import { View, Text, StyleSheet, Button } from "react-native";
+
 import useAuthStore from "../stores/auth";
 
 export default function Profile() {
