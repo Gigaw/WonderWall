@@ -33,7 +33,7 @@ export default function Home({ navigation }) {
   const { tours, setTours, setIsLoading, isLoading } = useToursStore(
     (state) => state
   );
-  const [activeSection, setActiveSection] = useState("activity");
+  const [activeSection, setActiveSection] = useState("easy");
   // const { values, errors, handleBlur, handleChange } = useFormik({
   //   initialValues: {  },
   //   validationSchema,
@@ -75,10 +75,10 @@ export default function Home({ navigation }) {
                 value={searchQuery}
               />
               <Spacer height={10} />
-              {/* <HomeTabs
+              <HomeTabs
                 activeTab={activeSection}
                 onTabClick={setActiveSection}
-              /> */}
+              />
               <Spacer height={20} />
             </>
           }

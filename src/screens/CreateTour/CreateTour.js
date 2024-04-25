@@ -162,6 +162,7 @@ const CreateTour = () => {
         <View style={{ backgroundColor: "white", padding: 10 }}>
           <RNPickerSelect
             style={{}}
+            placeholder="Выберите уровень сложности"
             value={values.level}
             onValueChange={handleChange("level")}
             items={[

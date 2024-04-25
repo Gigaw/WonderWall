@@ -14,7 +14,7 @@ import { Button } from "react-native-paper";
 // {"description": "test description", "distance": 20, "duration": 5, "id": 2, "img_url": "test_img", "level_id": 1, "location": "test location", "map_data": {}, "name": "test", "price": "500.00"},
 const TourDetail = ({ navigation, route }) => {
   const { description, distance, duration, img_url, location, name, price } =
-    route.params.data;
+    route.params.data; 
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView
@@ -33,14 +33,12 @@ const TourDetail = ({ navigation, route }) => {
         <Text style={styles.description}>{description}</Text>
         <Spacer height={10} />
 
-        {/* <InfoRow name="name" value={name} /> */}
-        {/* <InfoRow name="description" value={description} /> */}
         <InfoRow name="Цена" value={price + " р"} />
         <InfoRow name="Длительность" value={duration + " Ч."} />
         <InfoRow name="Дистанция" value={distance + " Км."} />
         <InfoRow name="Локация" value={location} />
         <Spacer height={200} />
-        <Button>Забронировать</Button>
+        <Button>Заявка</Button>
         <Spacer height={10} />
       </ScrollView>
     </SafeAreaView>

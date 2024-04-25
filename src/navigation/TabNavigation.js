@@ -1,5 +1,4 @@
 import Home from "@app/screens/Home/Home";
-import Map from "@app/screens/Map";
 import Profile from "@app/screens/Profile";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import * as React from "react";
