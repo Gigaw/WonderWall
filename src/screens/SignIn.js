@@ -6,7 +6,9 @@ import * as Yup from "yup";
 
 import Spacer from "../components/Spacer.js";
 import useAuthStore from "../stores/auth.js";
-// import useSignIn from "../hooks/useSignIn.js";
+import useSignIn from "../hooks/useSignIn.js";
+import { useQueryClient } from "@tanstack/react-query";
+import { signIn } from "../api/auth/sign-in.js";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Required"),
@@ -16,39 +18,57 @@ const validationSchema = Yup.object().shape({
 });
 
 const SignIn = ({ navigation }) => {
+  const queryClient = useQueryClient();
+  const logIn = useAuthStore((state) => state.logIn);
   const setIsAuth = useAuthStore((state) => state.setIsAuth);
   // const signIn = useSignIn();
   const [passwordEyeOpened, setPasswordEyeOpened] = useState(false);
 
-  const { values, errors, handleBlur, handleChange } = useFormik({
-    initialValues: { email: "", password: "" },
+  const {
+    values,
+    errors,
+    handleBlur,
+    handleChange,
+    touched,
+    submitForm,
+    handleSubmit,
+  } = useFormik({
+    initialValues: { email: "test@test.com", password: "test1234" },
     validationSchema,
     onSubmit: (values) => {
-      // signIn(values.email, values.password);
-      console.log(values);
+      signIn({ email: values.email, password: values.password })
+        .then((res) => {
+          logIn(res.user, res.token);
+          // navigation.navigate('TabNavigator')
+        })
+        .catch((e) => console.log(e));
     },
   });
 
+  const emailError = Boolean(!!errors.email && touched.email);
+  const passwordError = Boolean(!!errors.password && touched.password);
+  // console.log("password", !!errors.password && touched.password);
+  // console.log("email", !!errors.email && touched.email);
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.centerContainer}>
         <TextInput
-          autoCapitalize={false}
+          autoCapitalize="none"
           label="Email"
-          error={errors.email}
+          error={emailError}
           value={values.email}
           onChangeText={handleChange("email")}
           onBlur={handleBlur("email")}
         />
-        <HelperText type="error" visible={!!errors.email}>
+        <HelperText type="error" visible={emailError}>
           {errors.email}
         </HelperText>
         <Spacer height={10} />
         <TextInput
-          autoCapitalize={false}
+          autoCapitalize="none"
           secureTextEntry={!passwordEyeOpened}
           label="Password"
-          error={errors.password}
+          error={passwordError}
           right={
             <TextInput.Icon
               onPress={() => setPasswordEyeOpened((prev) => !prev)}
@@ -58,16 +78,19 @@ const SignIn = ({ navigation }) => {
           onChangeText={handleChange("password")}
           onBlur={handleBlur("password")}
         />
-        <HelperText type="error" visible={!!errors.password}>
+        <HelperText type="error" visible={passwordError}>
           {errors.password}
         </HelperText>
         <Spacer height={10} />
-        <Button mode="contained" onPress={() => setIsAuth(true)}>
+        <Button mode="contained" onPress={() => handleSubmit()}>
           log in
         </Button>
         <Spacer height={10} />
         <Button onPress={() => navigation.navigate("SignUp")}>
           registration
+        </Button>
+        <Button onPress={() => navigation.navigate("TabNavigation")}>
+          Войти без регистрации
         </Button>
       </View>
     </SafeAreaView>

@@ -1,46 +1,55 @@
 import { LinearGradient } from "expo-linear-gradient";
-import { useFormik } from "formik";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
   SafeAreaView,
   Dimensions,
-  Image,
+  FlatList,
+  TouchableOpacity,
 } from "react-native";
-import { TextInput, Searchbar } from "react-native-paper";
-import Carousel from "react-native-reanimated-carousel";
+import { Searchbar } from "react-native-paper";
 import * as Yup from "yup";
 
 import HomeTabs from "./Tabs";
 import Spacer from "../../components/Spacer";
+import ListItem from "./ListItem";
+import { getTours } from "../../api/tour/get";
+import useAuthStore from "../../stores/auth";
+import useToursStore from "../../stores/tours";
 const windowHeight = Dimensions.get("window").height;
-const width = Dimensions.get("window").width;
-const validationSchema = Yup.object().shape({
-  search: Yup.string().email("Invalid email").required("Required"),
-});
+// const width = Dimensions.get("window").width;
+// const validationSchema = Yup.object().shape({
+//   search: Yup.string().email("Invalid email").required("Required"),
+// });
 
-export default function Home() {
+export default function Home({ navigation }) {
   const [searchQuery, setSearchQuery] = useState("");
+  const token = useAuthStore((state) => state.token);
+  // const setIsLoading = useToursStore(state => state.setIsLoading)
+  // const setTours = useToursStore(state => state.setTours)
+  // const tours = useToursStore(state )
+  const { tours, setTours, setIsLoading, isLoading } = useToursStore(
+    (state) => state
+  );
   const [activeSection, setActiveSection] = useState("activity");
-  const { values, errors, handleBlur, handleChange } = useFormik({
-    initialValues: { email: "", password: "", name: "", repeatPassword: "" },
-    validationSchema,
-    onSubmit: (values) => {
-      console.log(values);
-    },
-  });
-  const [mode, setMode] = React.useState("horizontal-stack");
-  const [snapDirection, setSnapDirection] = React.useState("left");
-  const [pagingEnabled, setPagingEnabled] = React.useState(true);
-  const [snapEnabled, setSnapEnabled] = React.useState(true);
-  const [loop, setLoop] = React.useState(true);
-  const [autoPlay, setAutoPlay] = React.useState(false);
-  const [autoPlayReverse, setAutoPlayReverse] = React.useState(false);
+  // const { values, errors, handleBlur, handleChange } = useFormik({
+  //   initialValues: {  },
+  //   validationSchema,
+  //   onSubmit: (values) => {
+  //     console.log(values);
+  //   },
+  // });
 
-  const data = React.useRef([...new Array(4).keys()]).current;
-  const viewCount = 5;
+  useEffect(() => {
+    setIsLoading(true);
+    getTours(token).then((res) => {
+      setTours(res);
+      setIsLoading(false);
+    });
+  }, []);
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <LinearGradient
@@ -54,81 +63,43 @@ export default function Home() {
         style={styles.background}
       />
       <View style={styles.container}>
-        <Text style={styles.title}>Hello, Steran</Text>
-        <Spacer height={10} />
-        <Searchbar
-          placeholder="Search"
-          onChangeText={setSearchQuery}
-          value={searchQuery}
-        />
-        <Spacer height={10} />
-        <HomeTabs activeTab={activeSection} onTabClick={setActiveSection} />
-        <Carousel
-          style={{
-            width: "100%",
-            height: 350,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-          width={240}
-          height={300}
-          pagingEnabled={pagingEnabled}
-          snapEnabled={snapEnabled}
-          mode={mode}
-          loop={loop}
-          autoPlay={autoPlay}
-          autoPlayReverse={autoPlayReverse}
-          data={data}
-          modeConfig={{
-            snapDirection,
-            stackInterval: mode === "vertical-stack" ? 8 : 18,
-          }}
-          customConfig={() => ({ type: "positive", viewCount })}
-          renderItem={({ index }) => (
-            <View
-              key={index}
-              style={{
-                flex: 1,
-                justifyContent: "center",
-                backgroundColor: "orange",
-                borderRadius: 20,
-                overflow: "hidden",
-              }}
-            >
-              <Image
-                source={require("/assets/tourists.jpg")}
-                style={{ width: "100%", height: "100%" }}
-              />
-              <View
-                style={{
-                  width: "100%",
-                  padding: 15,
-                  position: "absolute",
-                  top: 0,
-                  backgroundColor: "rgba(255, 255, 255, 0.6)",
-                }}
-              >
-                <Text style={{ fontSize: 20 }}>Tours from avid travelers</Text>
-                <Text>Don't travel alon!</Text>
-              </View>
+        <FlatList
+          style={styles.list}
+          contentContainerStyle={styles.listContainer}
+          ListHeaderComponent={
+            <>
+              <Text style={styles.title}>Hello, Steran</Text>
 
-              <View
-                style={{
-                  width: "100%",
-                  padding: 15,
-                  position: "absolute",
-                  bottom: 0,
-                  backgroundColor: "rgba(0, 0, 0, 0.4)",
-                }}
-              >
-                <Text style={{ fontSize: 20, color: "white" }}>
-                  Tours from avid travelers
-                </Text>
-                <Text style={{ color: "white" }}>Don't travel alon!</Text>
-              </View>
-            </View>
+              <Spacer height={10} />
+              <Searchbar
+                placeholder="Search"
+                onChangeText={setSearchQuery}
+                value={searchQuery}
+              />
+              <Spacer height={10} />
+              {/* <HomeTabs
+                activeTab={activeSection}
+                onTabClick={setActiveSection}
+              /> */}
+              <Spacer height={20} />
+            </>
+          }
+          data={tours}
+          renderItem={({ item }) => (
+            <ListItem
+              data={item}
+              onPress={() => navigation.navigate("TourDetail", { data: item })}
+            />
           )}
+          keyExtractor={(item, index) => item.id.toString()}
+          ItemSeparatorComponent={<Spacer height={10} />}
         />
+        <TouchableOpacity
+          style={styles.floatingButton}
+          onPress={() => navigation.navigate("CreateTour")}
+        >
+          <Text>Добавить маршрут +</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -137,10 +108,7 @@ export default function Home() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 20,
-    // alignItems: "center",
-    // justifyContent: "center",
-    // backgroundColor: "orange",
+    // paddingHorizontal: 20,
   },
   title: {
     fontSize: 24,
@@ -162,5 +130,19 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
     fontSize: 15,
     color: "#fff",
+  },
+  list: {},
+  listContainer: {
+    paddingHorizontal: 16,
+  },
+  floatingButton: {
+    position: "absolute",
+    bottom: 30,
+    right: 30,
+    backgroundColor: "white",
+    padding: 10,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: "grey",
   },
 });

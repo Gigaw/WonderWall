@@ -3,8 +3,11 @@ import React, { useState } from "react";
 import { StyleSheet, Text, View, SafeAreaView } from "react-native";
 import { TextInput, Button, HelperText } from "react-native-paper";
 import * as Yup from "yup";
-
+const phoneRegExp =
+  /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 import Spacer from "../components/Spacer.js";
+import { signUp } from "../api/auth/sign-up.js";
+import useAuthStore from "../stores/auth.js";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Required"),
@@ -12,6 +15,10 @@ const validationSchema = Yup.object().shape({
     .min(8, "Password must be at least 8 characters")
     .required("Required"),
   name: Yup.string().min(4, "Name must be at least 4").required("Required"),
+  phone: Yup.string()
+    .matches(phoneRegExp, "Phone number is not valid")
+    .min(10)
+    .max(14),
   repeatPassword: Yup.string()
     .oneOf([Yup.ref("password"), null], "Passwords must match")
     .required("Repeat password is required"),
@@ -20,12 +27,24 @@ const validationSchema = Yup.object().shape({
 const SignUp = () => {
   const [passwordEyeOpened, setPasswordEyeOpened] = useState(false);
   const [passwordRepeatEyeOpened, setPasswordRepeatEyeOpened] = useState(false);
+  const logIn = useAuthStore((state) => state.logIn);
 
-  const { values, errors, handleBlur, handleChange } = useFormik({
-    initialValues: { email: "", password: "", name: "", repeatPassword: "" },
+  const { values, errors, handleBlur, handleChange, submitForm } = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+      name: "",
+      repeatPassword: "",
+      phone: "",
+    },
     validationSchema,
-    onSubmit: (values) => {
-      console.log(values);
+    onSubmit: ({ name, email, password, phone }) => {
+      console.log("here");
+      signUp({ name, email, password, phone }).then((res) => {
+        if (res.token) {
+          logIn(res.user, res.token);
+        }
+      });
     },
   });
   return (
@@ -51,6 +70,17 @@ const SignUp = () => {
         />
         <HelperText type="error" visible={!!errors.email}>
           {errors.email}
+        </HelperText>
+        <Spacer height={10} />
+        <TextInput
+          label="Phone"
+          error={errors.phone}
+          value={values.phone}
+          onChangeText={handleChange("phone")}
+          onBlur={handleBlur("phone")}
+        />
+        <HelperText type="error" visible={!!errors.phone}>
+          {errors.phone}
         </HelperText>
         <Spacer height={10} />
         <TextInput
@@ -88,11 +118,11 @@ const SignUp = () => {
           {errors.repeatPassword}
         </HelperText>
         <Spacer height={10} />
-        <Button mode="contained" onPress={() => console.log("Pressed")}>
-          log in
+        <Button mode="contained" onPress={() => submitForm()}>
+          sign up
         </Button>
         <Spacer height={10} />
-        <Button onPress={() => console.log("Pressed")}>registration</Button>
+        {/* <Button onPress={() => console.log("Pressed")}>registration</Button> */}
       </View>
     </SafeAreaView>
   );

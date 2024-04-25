@@ -6,12 +6,13 @@ import TabNavigation from "./TabNavigation";
 import SignIn from "../screens/SignIn";
 import SignUp from "../screens/SignUp";
 import useAuthStore from "../stores/auth";
+import CreateTour from "../screens/CreateTour/CreateTour";
+import TourDetail from "../screens/TourDetail/TourDetail";
 
 const Stack = createNativeStackNavigator();
 
 const Navigation = () => {
   const isAuth = useAuthStore((state) => state.isAuth);
-
   return (
     <NavigationContainer>
       <Stack.Navigator>
@@ -27,6 +28,8 @@ const Navigation = () => {
               component={TabNavigation}
               options={{ headerShown: false }}
             />
+            <Stack.Screen name="TourDetail" component={TourDetail} />
+            <Stack.Screen name="CreateTour" component={CreateTour} />
           </>
         )}
       </Stack.Navigator>
