@@ -138,7 +138,6 @@ const CreateTour = () => {
         <Spacer height={10} />
         <TextInput
           label="Локация (название населенного пункта)"
-          keyboardType="numeric"
           value={values.location}
           error={errors.location}
           onChangeText={handleChange("location")}
