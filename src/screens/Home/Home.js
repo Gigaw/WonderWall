@@ -68,11 +68,9 @@ export default function Home({ navigation }) {
           contentContainerStyle={styles.listContainer}
           ListHeaderComponent={
             <>
-              <Text style={styles.title}>Hello, Steran</Text>
-
               <Spacer height={10} />
               <Searchbar
-                placeholder="Search"
+                placeholder="Поиск"
                 onChangeText={setSearchQuery}
                 value={searchQuery}
               />

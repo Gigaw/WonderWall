@@ -35,11 +35,11 @@ const TourDetail = ({ navigation, route }) => {
 
         {/* <InfoRow name="name" value={name} /> */}
         {/* <InfoRow name="description" value={description} /> */}
-        <InfoRow name="price" value={price} />
-        <InfoRow name="duration" value={duration} />
-        <InfoRow name="distance" value={distance} />
-        <InfoRow name="location" value={location} />
-        <Spacer height={10} />
+        <InfoRow name="Цена" value={price + " р"} />
+        <InfoRow name="Длительность" value={duration + " Ч."} />
+        <InfoRow name="Дистанция" value={distance + " Км."} />
+        <InfoRow name="Локация" value={location} />
+        <Spacer height={200} />
         <Button>Забронировать</Button>
         <Spacer height={10} />
       </ScrollView>

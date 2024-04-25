@@ -36,13 +36,13 @@ const CreateTour = () => {
   const [image, setImage] = useState(null);
   const { values, errors, handleBlur, handleChange, submitForm } = useFormik({
     initialValues: {
-      name: "test name",
-      description: "test description 1234",
-      price: "1000",
-      duration: "20",
-      location: "Moscow",
-      level: "1",
-      distance: "15",
+      name: "",
+      description: "",
+      price: "",
+      duration: "",
+      location: "",
+      level: "",
+      distance: "",
     },
     validationSchema,
     onSubmit: async (values) => {
@@ -89,7 +89,7 @@ const CreateTour = () => {
 
         <Spacer height={10} />
         <TextInput
-          label="Tour name"
+          label="Название"
           value={values.name}
           error={errors.name}
           onChangeText={handleChange("name")}
@@ -100,7 +100,7 @@ const CreateTour = () => {
         </HelperText>
         <Spacer height={10} />
         <TextInput
-          label="Tour description"
+          label="Описание"
           multiline
           style={{ height: 100 }}
           value={values.description}
@@ -113,7 +113,7 @@ const CreateTour = () => {
         </HelperText>
         <Spacer height={10} />
         <TextInput
-          label="Tour price (rubles)"
+          label="Цена в рублях"
           keyboardType="numeric"
           value={values.price}
           error={errors.price}
@@ -125,7 +125,7 @@ const CreateTour = () => {
         </HelperText>
         <Spacer height={10} />
         <TextInput
-          label="Tour duration (hours)"
+          label="Длительность в часах"
           keyboardType="numeric"
           value={values.duration}
           error={errors.duration}
@@ -137,7 +137,7 @@ const CreateTour = () => {
         </HelperText>
         <Spacer height={10} />
         <TextInput
-          label="Tour location (city name)"
+          label="Локация (название населенного пункта)"
           keyboardType="numeric"
           value={values.location}
           error={errors.location}
@@ -149,7 +149,7 @@ const CreateTour = () => {
         </HelperText>
         <Spacer height={10} />
         <TextInput
-          label="Tour distance (km)"
+          label="Дистанция в километрах"
           keyboardType="numeric"
           value={values.distance}
           error={errors.distance}
@@ -166,9 +166,9 @@ const CreateTour = () => {
             value={values.level}
             onValueChange={handleChange("level")}
             items={[
-              { label: "easy", value: "1" },
-              { label: "medium", value: "2" },
-              { label: "hard", value: "3" },
+              { label: "Легкий", value: "1" },
+              { label: "Средний", value: "2" },
+              { label: "Сложный", value: "3" },
             ]}
           />
         </View>
@@ -177,7 +177,7 @@ const CreateTour = () => {
         </HelperText>
         <Spacer height={10} />
         <Button mode="contained" onPress={submitForm}>
-          Create tour
+          Создать тур
         </Button>
       </ScrollView>
     </SafeAreaView>

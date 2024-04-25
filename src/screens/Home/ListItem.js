@@ -25,7 +25,7 @@ const ListItem = ({ data, onPress }) => {
       </View>
       <Spacer height={10} />
       <View style={styles.footerContainer}>
-        <Text>Price</Text>
+        <Text>Цена</Text>
         <Text>{price}р</Text>
       </View>
     </TouchableOpacity>

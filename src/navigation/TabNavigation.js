@@ -10,12 +10,11 @@ export default function TabNavigation() {
   return (
     <Tab.Navigator>
       <Tab.Screen
-        name="Home"
+        name="Главная"
         component={Home}
         options={{ headerShown: false }}
       />
-      <Tab.Screen name="Map" component={Map} />
-      <Tab.Screen name="Profile" component={Profile} />
+      <Tab.Screen name="Профиль" component={Profile} />
     </Tab.Navigator>
   );
 }

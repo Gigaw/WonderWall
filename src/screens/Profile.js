@@ -17,7 +17,7 @@ export default function Profile({ navigation }) {
       <Text>{user.phone}</Text>
       <Spacer height={20} />
       <Button
-        title="Sign out"
+        title="Выйти"
         onPress={() => {
           setIsAuth(false);
         }}

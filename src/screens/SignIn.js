@@ -1,7 +1,7 @@
 import { useFormik } from "formik";
 import React, { useState } from "react";
 import { StyleSheet, View, SafeAreaView } from "react-native";
-import { TextInput, Button, HelperText } from "react-native-paper";
+import { TextInput, Button, HelperText, Text } from "react-native-paper";
 import * as Yup from "yup";
 
 import Spacer from "../components/Spacer.js";
@@ -33,7 +33,7 @@ const SignIn = ({ navigation }) => {
     submitForm,
     handleSubmit,
   } = useFormik({
-    initialValues: { email: "test@test.com", password: "test1234" },
+    initialValues: { email: "", password: "" },
     validationSchema,
     onSubmit: (values) => {
       signIn({ email: values.email, password: values.password })
@@ -52,9 +52,13 @@ const SignIn = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.centerContainer}>
+        <Text style={{ fontSize: 18, fontWeight: "600", textAlign: "center" }}>
+          Авторизация
+        </Text>
+        <Spacer height={30} />
         <TextInput
           autoCapitalize="none"
-          label="Email"
+          label="Электронная почта"
           error={emailError}
           value={values.email}
           onChangeText={handleChange("email")}
@@ -67,7 +71,7 @@ const SignIn = ({ navigation }) => {
         <TextInput
           autoCapitalize="none"
           secureTextEntry={!passwordEyeOpened}
-          label="Password"
+          label="Пароль"
           error={passwordError}
           right={
             <TextInput.Icon
@@ -83,11 +87,11 @@ const SignIn = ({ navigation }) => {
         </HelperText>
         <Spacer height={10} />
         <Button mode="contained" onPress={() => handleSubmit()}>
-          log in
+          Войти
         </Button>
         <Spacer height={10} />
         <Button onPress={() => navigation.navigate("SignUp")}>
-          registration
+          Зарегистрироваться
         </Button>
         <Button onPress={() => navigation.navigate("TabNavigation")}>
           Войти без регистрации
