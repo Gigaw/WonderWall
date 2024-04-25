@@ -9,19 +9,23 @@ import Spacer from "../components/Spacer.js";
 import { signUp } from "../api/auth/sign-up.js";
 import useAuthStore from "../stores/auth.js";
 
+const requiredText = "Обязательно для заполнения";
 const validationSchema = Yup.object().shape({
-  email: Yup.string().email("Invalid email").required("Required"),
+  email: Yup.string().email("Неверная почта").required(requiredText),
   password: Yup.string()
-    .min(8, "Password must be at least 8 characters")
-    .required("Required"),
-  name: Yup.string().min(4, "Name must be at least 4").required("Required"),
+    .min(8, "Пароль должен быть минимум 8 знаков")
+    .required(requiredText),
+  name: Yup.string()
+    .min(4, "Имя должно быть минимум из 4 символов")
+    .required(requiredText),
   phone: Yup.string()
-    .matches(phoneRegExp, "Phone number is not valid")
+    .required(requiredText)
+    .matches(phoneRegExp, "Неверный номер телефона")
     .min(10)
     .max(14),
   repeatPassword: Yup.string()
-    .oneOf([Yup.ref("password"), null], "Passwords must match")
-    .required("Repeat password is required"),
+    .oneOf([Yup.ref("password"), null], "Пароли не совпадают")
+    .required(requiredText),
 });
 
 const SignUp = () => {
@@ -51,7 +55,7 @@ const SignUp = () => {
     <SafeAreaView style={styles.container}>
       <View style={styles.centerContainer}>
         <TextInput
-          label="First name"
+          label="Имя"
           value={values.name}
           error={errors.name}
           onChangeText={handleChange("name")}
@@ -62,7 +66,7 @@ const SignUp = () => {
         </HelperText>
         <Spacer height={10} />
         <TextInput
-          label="Email"
+          label="Почта"
           error={errors.email}
           value={values.email}
           onChangeText={handleChange("email")}
@@ -73,7 +77,7 @@ const SignUp = () => {
         </HelperText>
         <Spacer height={10} />
         <TextInput
-          label="Phone"
+          label="Телефон"
           error={errors.phone}
           value={values.phone}
           onChangeText={handleChange("phone")}
@@ -85,7 +89,7 @@ const SignUp = () => {
         <Spacer height={10} />
         <TextInput
           secureTextEntry={!passwordEyeOpened}
-          label="Password"
+          label="Пароль"
           error={errors.password}
           right={
             <TextInput.Icon
@@ -109,7 +113,7 @@ const SignUp = () => {
             />
           }
           error={errors.repeatPassword}
-          label="Repeat password"
+          label="Повторение пароля"
           value={values.repeatPassword}
           onChangeText={handleChange("repeatPassword")}
           onBlur={handleBlur("repeatPassword")}
@@ -119,7 +123,7 @@ const SignUp = () => {
         </HelperText>
         <Spacer height={10} />
         <Button mode="contained" onPress={() => submitForm()}>
-          sign up
+          Зарегистрироваться
         </Button>
         <Spacer height={10} />
         {/* <Button onPress={() => console.log("Pressed")}>registration</Button> */}

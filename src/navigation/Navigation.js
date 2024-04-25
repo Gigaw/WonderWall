@@ -15,7 +15,9 @@ const Navigation = () => {
   const isAuth = useAuthStore((state) => state.isAuth);
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerBackTitle: "Назад" }}>
+      <Stack.Navigator
+        screenOptions={{ headerBackTitle: "Назад", headerTitle: "" }}
+      >
         {!isAuth ? (
           <>
             <Stack.Screen
@@ -32,16 +34,8 @@ const Navigation = () => {
               component={TabNavigation}
               options={{ headerShown: false }}
             />
-            <Stack.Screen
-              name="TourDetail"
-              component={TourDetail}
-              options={{ headerTitle: "" }}
-            />
-            <Stack.Screen
-              name="CreateTour"
-              component={CreateTour}
-              options={{ headerTitle: "" }}
-            />
+            <Stack.Screen name="TourDetail" component={TourDetail} />
+            <Stack.Screen name="CreateTour" component={CreateTour} />
           </>
         )}
       </Stack.Navigator>
