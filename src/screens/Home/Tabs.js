@@ -19,16 +19,13 @@ export default function HomeTabs({ activeTab = "activity", onTabClick }) {
       }}
     >
       {Tabs.map((tab, index) => (
-        <>
-          <TouchableOpacity
-            key={index}
-            style={[styles.tab, tab.type === activeTab && styles.activeTab]}
-            onPress={() => onTabClick(tab.type)}
-          >
-            <Text>{tab.name}</Text>
-          </TouchableOpacity>
-          <Spacer width={5} />
-        </>
+        <TouchableOpacity
+          key={index}
+          style={[styles.tab, tab.type === activeTab && styles.activeTab]}
+          onPress={() => onTabClick(tab.type)}
+        >
+          <Text>{tab.name}</Text>
+        </TouchableOpacity>
       ))}
     </View>
   );
@@ -40,6 +37,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 10,
+    marginRight: 5,
   },
   activeTab: {
     backgroundColor: "rgba(255,255,255,0.5)",
