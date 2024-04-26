@@ -7,6 +7,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
+  Alert,
 } from "react-native";
 import { Button, HelperText, TextInput } from "react-native-paper";
 import * as Yup from "yup";
@@ -16,6 +17,7 @@ import { AntDesign } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { createTour } from "../../api/tour/create";
 import useAuthStore from "../../stores/auth";
+import useToursStore from "../../stores/tours";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().min(4, "Name must be at least 4").required("Required"),
@@ -31,24 +33,41 @@ const validationSchema = Yup.object().shape({
 
   level: Yup.number().required().positive().integer(),
 });
+
+const tourCreatedSuccessfullyAlert = () =>
+  Alert.alert("Успех", "Создание тура прошло успешно", [
+    { text: "OK", onPress: () => console.log("OK Pressed") },
+  ]);
+
+const tourNotCreatedAlert = () =>
+  Alert.alert("Не вышло", "Тур не создан, попробуйте позже", [
+    { text: "OK", onPress: () => console.log("OK Pressed") },
+  ]);
+
 const CreateTour = () => {
   const token = useAuthStore((state) => state.token);
+  const addTour = useToursStore((state) => state.addTour);
   const [image, setImage] = useState(null);
-  const { values, errors, handleBlur, handleChange, submitForm } = useFormik({
-    initialValues: {
-      name: "",
-      description: "",
-      price: "",
-      duration: "",
-      location: "",
-      level: "",
-      distance: "",
-    },
-    validationSchema,
-    onSubmit: async (values) => {
-      createTour(values, token).then((res) => console.log("res", res));
-    },
-  });
+  const { values, errors, handleBlur, handleChange, submitForm, resetForm,  } =
+    useFormik({
+      initialValues: {
+        name: "",
+        description: "",
+        price: "",
+        duration: "",
+        location: "",
+        level: "",
+        distance: "",
+      },
+      validationSchema,
+      onSubmit: async (values) => {
+        createTour(values, token).then((res) => {
+          addTour(res);
+          // resetForm();
+          tourCreatedSuccessfullyAlert();
+        });
+      },
+    });
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -162,13 +181,17 @@ const CreateTour = () => {
         <View style={{ backgroundColor: "white", padding: 10 }}>
           <RNPickerSelect
             style={{}}
-            placeholder="Выберите уровень сложности"
+            placeholder={{
+              label: "Выберите уровень сложности",
+              value: "0",
+              key: 0,
+            }}
             value={values.level}
             onValueChange={handleChange("level")}
             items={[
-              { label: "Легкий", value: "1" },
-              { label: "Средний", value: "2" },
-              { label: "Сложный", value: "3" },
+              { label: "Легкий", value: "1", key: 1 },
+              { label: "Средний", value: "2", key: 2 },
+              { label: "Сложный", value: "3", key: 3 },
             ]}
           />
         </View>
