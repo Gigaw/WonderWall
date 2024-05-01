@@ -9,7 +9,7 @@ import useAuthStore from "../stores/auth.js";
 import useSignIn from "../hooks/useSignIn.js";
 import { useQueryClient } from "@tanstack/react-query";
 import { signIn } from "../api/auth/sign-in.js";
-import { localStorage } from "../local-storage/local-storage.js";
+// import { localStorage } from "../local-storage/local-storage.js";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Required"),
@@ -39,8 +39,8 @@ const SignIn = ({ navigation }) => {
     onSubmit: (values) => {
       signIn({ email: values.email, password: values.password })
         .then((res) => {
-          localStorage.set("user", JSON.stringify(res.user));
-          localStorage.set("token", res.token);
+          // localStorage.set("user", JSON.stringify(res.user));
+          // localStorage.set("token", res.token);
           logIn(res.user, res.token);
         })
         .catch((e) => console.log(e));
@@ -48,14 +48,14 @@ const SignIn = ({ navigation }) => {
   });
 
   useEffect(() => {
-    const userJson = localStorage.getString("user");
-    const token = localStorage.getString("token");
-    console.log('hi', userJson, token)
-    if (token && userJson) {
-      const userObject = JSON.parse(userJson);
-      console.log('here', userObject, token)
-      logIn(userObject, token);
-    }
+    // const userJson = localStorage.getString("user");
+    // const token = localStorage.getString("token");
+    // console.log('hi', userJson, token)
+    // if (token && userJson) {
+    //   const userObject = JSON.parse(userJson);
+    //   console.log('here', userObject, token)
+    //   logIn(userObject, token);
+    // }
   }, []);
 
   const emailError = Boolean(!!errors.email && touched.email);
