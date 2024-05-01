@@ -18,20 +18,32 @@ export const createTour = async (data, token) => {
   }
 };
 
-export const uploadImageTourImage = (image_url, token) => {
+export const uploadTourImage = async ({ image_url, token, tourId }) => {
   const formData = new FormData();
-  formData.append("tour-image", {
+  formData.append("image", {
     name: new Date() + "_tour-image",
     uri: image_url,
-    type: "image/jpg",
+    type: "image",
   });
+  console.log(
+    "here",
+    apiURL + `/tours/upload-img/${tourId}`,
+    image_url,
+    token,
+    tourId
+  );
 
-  fetch(apiURL + "", {
+  const response = await fetch(apiURL + `/tours/upload-img/${tourId}`, {
     headers: {
       method: "POST",
-      Accept: "application/json",
-      "Content-type": "multipart/form-data",
-      authorization: "Bearer " + token,
+      headers: {
+        Accept: "application/json",
+        "Content-type": "multipart/form-data",
+        authorization: "Bearer " + token,
+      },
+      body: formData,
     },
   });
+
+  return await response.json();
 };

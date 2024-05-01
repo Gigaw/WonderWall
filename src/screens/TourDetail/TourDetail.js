@@ -5,16 +5,94 @@ import {
   ScrollView,
   Image,
   StyleSheet,
+  Alert,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import InfoRow from "./InfoRow";
 import Spacer from "../../components/Spacer";
 import { Button } from "react-native-paper";
+import { createBooking } from "../../api/booking/create";
+import useAuthStore from "../../stores/auth";
 
-// {"description": "test description", "distance": 20, "duration": 5, "id": 2, "img_url": "test_img", "level_id": 1, "location": "test location", "map_data": {}, "name": "test", "price": "500.00"},
+const apiURL = process.env.EXPO_PUBLIC_API_URL;
+
+const getBooking = async (tourId, token) => {
+  const response = await fetch(apiURL + `/bookings/by-tour-id/${tourId}`, {
+    method: "GET",
+    headers: {
+      authorization: "Bearer " + token,
+      "Content-Type": "application/json",
+    },
+  });
+  if (!response.ok) throw new Error();
+  return await response.json();
+};
+// const deleteTourAlert = (name, onYesPress) =>
+//   Alert.alert("Удаление Тура", "Вы уверены что хотите удалить тур - " + name, [
+//     { text: "Нет", onPress: () => console.log("Нет Pressed") },
+//     { text: "Да", onPress: onYesPress },
+//   ]);
+const createBookingSuccessAlert = () =>
+  Alert.alert("Успех", "Заявка успешно отправлена", [
+    { text: "Ок", onPress: () => console.log("Да Pressed") },
+  ]);
+
 const TourDetail = ({ navigation, route }) => {
-  const { description, distance, duration, img_url, location, name, price } =
-    route.params.data; 
+  const {
+    description,
+    distance,
+    duration,
+    img_url,
+    location,
+    name,
+    price,
+    id,
+  } = route.params.data;
+  const token = useAuthStore((state) => state.token);
+  const [booking, setBooking] = useState(null);
+  const statusIntoText = (statusId) => {
+    switch (statusId) {
+      case 1:
+        return "Заявка находится в обработке";
+      case 2:
+        return "Заявка Подтверждена Администратором";
+      case 3:
+        return "Заявка отклонена Администратором";
+    }
+  };
+  const fetchCreateBooking = async () => {
+    try {
+      const res = await createBooking({ tour_id: id }, token);
+      if (res) {
+        createBookingSuccessAlert();
+        setBooking(res);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchGetBooking = async () => {
+    try {
+      const res = await getBooking(id, token);
+
+      if (res.id) {
+        console.log("res", res);
+        setBooking(res);
+      } else {
+        setBooking(null);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchGetBooking();
+  }, []);
+
+  console.log(booking);
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView
@@ -37,8 +115,13 @@ const TourDetail = ({ navigation, route }) => {
         <InfoRow name="Длительность" value={duration + " Ч."} />
         <InfoRow name="Дистанция" value={distance + " Км."} />
         <InfoRow name="Локация" value={location} />
-        <Spacer height={200} />
-        <Button>Заявка</Button>
+        <Spacer height={100} />
+        <Button
+          onPress={() => fetchCreateBooking()}
+          disabled={booking !== null}
+        >
+          {booking === null ? "Заявка" : statusIntoText(booking.status_id)}
+        </Button>
         <Spacer height={10} />
       </ScrollView>
     </SafeAreaView>

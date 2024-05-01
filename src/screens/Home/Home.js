@@ -8,6 +8,7 @@ import {
   Dimensions,
   FlatList,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import { Searchbar } from "react-native-paper";
 import * as Yup from "yup";
@@ -18,11 +19,23 @@ import ListItem from "./ListItem";
 import { getTours } from "../../api/tour/get";
 import useAuthStore from "../../stores/auth";
 import useToursStore from "../../stores/tours";
+import { useFormik } from "formik";
+import { deleteTour } from "../../api/tour/delete";
 const windowHeight = Dimensions.get("window").height;
 // const width = Dimensions.get("window").width;
-// const validationSchema = Yup.object().shape({
-//   search: Yup.string().email("Invalid email").required("Required"),
-// });
+const validationSchema = Yup.object().shape({
+  search: Yup.string(),
+});
+
+const deleteTourAlert = (name, onYesPress) =>
+  Alert.alert("Удаление Тура", "Вы уверены что хотите удалить тур - " + name, [
+    { text: "Нет", onPress: () => console.log("Нет Pressed") },
+    { text: "Да", onPress: onYesPress },
+  ]);
+const deleteTourSuccessAlert = () =>
+  Alert.alert("Успех", "Тур успешно удален", [
+    { text: "Ок", onPress: () => console.log("Да Pressed") },
+  ]);
 
 export default function Home({ navigation }) {
   const [searchQuery, setSearchQuery] = useState("");
@@ -30,25 +43,45 @@ export default function Home({ navigation }) {
   // const setIsLoading = useToursStore(state => state.setIsLoading)
   // const setTours = useToursStore(state => state.setTours)
   // const tours = useToursStore(state )
-  const { tours, setTours, setIsLoading, isLoading } = useToursStore(
+  const { setTours, setIsLoading, removeTour, isLoading } = useToursStore(
     (state) => state
   );
-  const [activeSection, setActiveSection] = useState("easy");
-  // const { values, errors, handleBlur, handleChange } = useFormik({
-  //   initialValues: {  },
+  const tours = useToursStore((state) => state.tours);
+  const [activeSection, setActiveSection] = useState(1);
+  // const { values, handleBlur, handleChange } = useFormik({
+  //   initialValues: { search: "" },
   //   validationSchema,
   //   onSubmit: (values) => {
   //     console.log(values);
   //   },
   // });
 
-  useEffect(() => {
+  const fetchDeleteTour = async (id) => {
+    try {
+      const response = await deleteTour(id, token);
+
+      if (response) {
+        removeTour(id);
+        deleteTourSuccessAlert();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchTours = ({ search, level } = {}) => {
     setIsLoading(true);
-    getTours(token).then((res) => {
-      setTours(res);
-      setIsLoading(false);
-    });
-  }, []);
+    getTours({ token, search, level })
+      .then((res) => {
+        setTours(res);
+        setIsLoading(false);
+      })
+      .catch((e) => console.log("error", e));
+  };
+
+  useEffect(() => {
+    fetchTours({ level: activeSection });
+  }, [activeSection]);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -70,10 +103,14 @@ export default function Home({ navigation }) {
             <>
               <Spacer height={10} />
               <Searchbar
+                // right={() => (
+
+                // )}
                 placeholder="Поиск"
                 onChangeText={setSearchQuery}
                 value={searchQuery}
               />
+
               <Spacer height={10} />
               <HomeTabs
                 activeTab={activeSection}
@@ -87,6 +124,9 @@ export default function Home({ navigation }) {
             <ListItem
               data={item}
               onPress={() => navigation.navigate("TourDetail", { data: item })}
+              onDelete={() =>
+                deleteTourAlert(item.name, () => fetchDeleteTour(item.id))
+              }
             />
           )}
           keyExtractor={(item, index) => item.id.toString()}

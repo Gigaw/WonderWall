@@ -1,9 +1,10 @@
 import React from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
+import { Entypo, AntDesign } from "@expo/vector-icons";
 
 import Spacer from "../../components/Spacer";
 
-const ListItem = ({ data, onPress }) => {
+const ListItem = ({ data, onPress, onDelete, onEdit }) => {
   const { description, img_url, name, price } = data;
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
@@ -28,6 +29,12 @@ const ListItem = ({ data, onPress }) => {
         <Text>Цена</Text>
         <Text>{price}р</Text>
       </View>
+      <TouchableOpacity onPress={() => onDelete()} style={styles.crossBtn}>
+        <Entypo name="circle-with-cross" size={32} color="purple" />
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => onEdit()} style={styles.editBtn}>
+        <AntDesign name="edit" size={32} color="purple" />
+      </TouchableOpacity>
     </TouchableOpacity>
   );
 };
@@ -51,6 +58,24 @@ const styles = StyleSheet.create({
   footerContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
+  },
+  crossBtn: {
+    position: "absolute",
+    top: -10,
+    right: -10,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 0,
+  },
+  editBtn: {
+    position: "absolute",
+    top: 30,
+    right: -10,
+    backgroundColor: "white",
+    borderRadius: 5,
+    padding: 0,
+    borderWidth: 2,
+    borderColor: "purple",
   },
 });
 

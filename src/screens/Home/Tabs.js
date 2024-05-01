@@ -1,15 +1,13 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
-import Spacer from "../../components/Spacer";
-
 const Tabs = [
-  { id: 1, name: "Легкий", type: "easy" },
-  { id: 2, name: "Средний", type: "medium" },
-  { id: 3, name: "Сложный", type: "hard" },
+  { id: 1, name: "Легкий", type: "easy", level: 1 },
+  { id: 2, name: "Средний", type: "medium", level: 2 },
+  { id: 3, name: "Сложный", type: "hard", level: 3 },
 ];
 
-export default function HomeTabs({ activeTab = "activity", onTabClick }) {
+export default function HomeTabs({ activeTab = 1, onTabClick }) {
   return (
     <View
       style={{
@@ -21,8 +19,8 @@ export default function HomeTabs({ activeTab = "activity", onTabClick }) {
       {Tabs.map((tab, index) => (
         <TouchableOpacity
           key={index}
-          style={[styles.tab, tab.type === activeTab && styles.activeTab]}
-          onPress={() => onTabClick(tab.type)}
+          style={[styles.tab, tab.level === activeTab && styles.activeTab]}
+          onPress={() => onTabClick(tab.level)}
         >
           <Text>{tab.name}</Text>
         </TouchableOpacity>

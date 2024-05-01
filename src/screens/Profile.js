@@ -1,14 +1,14 @@
 import React from "react";
 import { View, Text, StyleSheet, Button } from "react-native";
 
-import useAuthStore from "../stores/auth";
 import Spacer from "../components/Spacer";
+import useAuthStore from "../stores/auth";
 
 export default function Profile({ navigation }) {
   const setIsAuth = useAuthStore((state) => state.setIsAuth);
   const user = useAuthStore((state) => state.user);
-  console.log(user);
   const logOut = useAuthStore((state) => state.logOut);
+
   return (
     <View style={{ flex: 1, alignItems: "center" }}>
       <Spacer height={20} />

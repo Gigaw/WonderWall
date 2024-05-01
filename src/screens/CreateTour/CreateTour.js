@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Image,
   Alert,
+  Platform,
 } from "react-native";
 import { Button, HelperText, TextInput } from "react-native-paper";
 import * as Yup from "yup";
@@ -15,9 +16,10 @@ import Spacer from "../../components/Spacer";
 import RNPickerSelect from "react-native-picker-select";
 import { AntDesign } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
-import { createTour } from "../../api/tour/create";
+import { createTour, uploadTourImage } from "../../api/tour/create";
 import useAuthStore from "../../stores/auth";
 import useToursStore from "../../stores/tours";
+const apiURL = process.env.EXPO_PUBLIC_API_URL;
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().min(4, "Name must be at least 4").required("Required"),
@@ -44,11 +46,53 @@ const tourNotCreatedAlert = () =>
     { text: "OK", onPress: () => console.log("OK Pressed") },
   ]);
 
-const CreateTour = () => {
+const CreateTour = ({}) => {
+  // const {}
+
   const token = useAuthStore((state) => state.token);
   const addTour = useToursStore((state) => state.addTour);
   const [image, setImage] = useState(null);
-  const { values, errors, handleBlur, handleChange, submitForm, resetForm,  } =
+  const uploadImage = async () => {
+    try {
+      console.log(image);
+      const filename = image.uri.replace(`/^.*[\\/]/`, "");
+      const formData = new FormData();
+      formData.append("image", image);
+      // formData.append(
+      //   "image",
+      //   {
+      //     name: filename,
+      //     uri:
+      //       Platform.OS === "ios"
+      //         ? image.uri.replace("file://", "")
+      //         : image.uri,
+      //     type: image.mimeType,
+      //   },
+      //   filename
+      // );
+
+      const response = await fetch(apiURL + `/tours/upload-img/${10}`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": undefined,
+          authorization: "Bearer " + token,
+        },
+      });
+
+      // const response = await uploadTourImage({
+      //   token,
+      //   image_url: image,
+      //   tourId: 10,
+      // });
+      if (response.ok) {
+        tourCreatedSuccessfullyAlert();
+      }
+    } catch (error) {
+      console.log("upload image error", error.message);
+    }
+  };
+  const { values, errors, handleBlur, handleChange, submitForm, resetForm } =
     useFormik({
       initialValues: {
         name: "",
@@ -62,9 +106,19 @@ const CreateTour = () => {
       validationSchema,
       onSubmit: async (values) => {
         createTour(values, token).then((res) => {
-          addTour(res);
+          // addTour(res);
+          if (image) {
+            uploadTourImage({ token, image_url: image, tourId: res.id })
+              .then((res) => {
+                tourCreatedSuccessfullyAlert();
+              })
+              .catch((error) =>
+                console.log("upload image error", error.message)
+              );
+          } else {
+            tourCreatedSuccessfullyAlert();
+          }
           // resetForm();
-          tourCreatedSuccessfullyAlert();
         });
       },
     });
@@ -75,13 +129,15 @@ const CreateTour = () => {
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       aspect: [4, 3],
+      base64: true,
       quality: 1,
     });
 
     // console.log(result);
 
     if (!result.canceled) {
-      setImage(result.assets[0].uri);
+      console.log(result.assets[0]);
+      setImage(result.assets[0]);
     }
   };
   // console.log(image);
@@ -89,8 +145,13 @@ const CreateTour = () => {
     <SafeAreaView>
       <ScrollView style={{}} contentContainerStyle={{ paddingHorizontal: 16 }}>
         <Spacer height={10} />
-        {image ? (
-          <Image source={{ uri: image }} style={{ width: 100, height: 100 }} />
+        {image?.uri ? (
+          <TouchableOpacity onPress={() => pickImage()}>
+            <Image
+              source={{ uri: image.uri }}
+              style={{ width: 100, height: 100 }}
+            />
+          </TouchableOpacity>
         ) : (
           <TouchableOpacity
             style={{
@@ -199,7 +260,7 @@ const CreateTour = () => {
           {errors.level}
         </HelperText>
         <Spacer height={10} />
-        <Button mode="contained" onPress={submitForm}>
+        <Button mode="contained" onPress={uploadImage}>
           Создать тур
         </Button>
       </ScrollView>
