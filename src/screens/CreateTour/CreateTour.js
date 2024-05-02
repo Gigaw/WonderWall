@@ -22,16 +22,27 @@ import useToursStore from "../../stores/tours";
 const apiURL = process.env.EXPO_PUBLIC_API_URL;
 
 const validationSchema = Yup.object().shape({
-  name: Yup.string().min(4, "Name must be at least 4").required("Required"),
+  name: Yup.string()
+    .min(4, "Длинна имени должна быть не менее 4 знаков")
+    .required("Обязательное поле"),
   description: Yup.string()
-    .min(20, "Description must be at least 20")
-    .required("Required"),
-  price: Yup.number().required().positive().integer(),
-  duration: Yup.number().required().positive().integer(),
-  distance: Yup.number().required().positive().integer(),
+    .min(20, "Описание должно быть не короче 20 знаков")
+    .required("Обязательное поле"),
+  price: Yup.number("Числовое поле")
+    .required("Обязательное поле")
+    .positive("Должно быть положительным")
+    .integer("только целые числа"),
+  duration: Yup.number("Числовое поле")
+    .required("Обязательное поле")
+    .positive("Должно быть положительным")
+    .integer("только целые числа"),
+  distance: Yup.number("Числовое поле")
+    .required("Обязательное поле")
+    .positive("Должно быть положительным")
+    .integer("только целые числа"),
   location: Yup.string()
-    .min(4, "location must be at least 4")
-    .required("Required"),
+    .min(4, "Должно быть не короче 4 знаков")
+    .required("Обязательное поле"),
 
   level: Yup.number().required().positive().integer(),
 });
@@ -41,14 +52,7 @@ const tourCreatedSuccessfullyAlert = () =>
     { text: "OK", onPress: () => console.log("OK Pressed") },
   ]);
 
-const tourNotCreatedAlert = () =>
-  Alert.alert("Не вышло", "Тур не создан, попробуйте позже", [
-    { text: "OK", onPress: () => console.log("OK Pressed") },
-  ]);
-
-const CreateTour = ({}) => {
-  // const {}
-
+const CreateTour = () => {
   const token = useAuthStore((state) => state.token);
   const addTour = useToursStore((state) => state.addTour);
   const [image, setImage] = useState(null);

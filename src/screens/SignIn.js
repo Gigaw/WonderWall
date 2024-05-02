@@ -12,10 +12,10 @@ import { signIn } from "../api/auth/sign-in.js";
 // import { localStorage } from "../local-storage/local-storage.js";
 
 const validationSchema = Yup.object().shape({
-  email: Yup.string().email("Invalid email").required("Required"),
+  email: Yup.string().email("Неверная почта").required("Обязательное поле"),
   password: Yup.string()
-    .min(8, "Password must be at least 8 characters")
-    .required("Required"),
+    .min(8, "Не меньше 8 символов")
+    .required("Обязательное поле"),
 });
 
 const SignIn = ({ navigation }) => {
