@@ -39,7 +39,7 @@ const createBookingSuccessAlert = () =>
 const notAuthAlert = () =>
   Alert.alert(
     "Уведомление",
-    "Войдите чтобы иметь возможность подать заявку на тур",
+    "Войдите, чтобы иметь возможность подать заявку на тур",
     [{ text: "Ок", onPress: () => console.log("Да Pressed") }]
   );
 
