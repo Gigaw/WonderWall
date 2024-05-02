@@ -18,26 +18,19 @@ const Navigation = () => {
       <Stack.Navigator
         screenOptions={{ headerBackTitle: "Назад", headerTitle: "" }}
       >
-        {!isAuth ? (
-          <>
-            <Stack.Screen
-              name="SignIn"
-              component={SignIn}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen name="SignUp" component={SignUp} />
-          </>
-        ) : (
-          <>
-            <Stack.Screen
-              name="TabNavigation"
-              component={TabNavigation}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen name="TourDetail" component={TourDetail} />
-            <Stack.Screen name="CreateTour" component={CreateTour} />
-          </>
-        )}
+        <Stack.Screen
+          name="SignIn"
+          component={SignIn}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen name="SignUp" component={SignUp} />
+        <Stack.Screen
+          name="TabNavigation"
+          component={TabNavigation}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen name="TourDetail" component={TourDetail} />
+        <Stack.Screen name="CreateTour" component={CreateTour} />
       </Stack.Navigator>
     </NavigationContainer>
   );

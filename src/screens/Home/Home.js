@@ -40,21 +40,12 @@ const deleteTourSuccessAlert = () =>
 export default function Home({ navigation }) {
   const [searchQuery, setSearchQuery] = useState("");
   const token = useAuthStore((state) => state.token);
-  // const setIsLoading = useToursStore(state => state.setIsLoading)
-  // const setTours = useToursStore(state => state.setTours)
-  // const tours = useToursStore(state )
-  const { setTours, setIsLoading, removeTour, isLoading } = useToursStore(
-    (state) => state
-  );
-  const tours = useToursStore((state) => state.tours);
+  const { tours, setTours, setIsLoading, removeTour, isLoading } =
+    useToursStore((state) => state);
+  const user = useAuthStore((state) => state.user);
+  const isAuth = useAuthStore((state) => state.isAuth);
+  const isAdmin = isAuth && user?.role_name === "admin";
   const [activeSection, setActiveSection] = useState(1);
-  // const { values, handleBlur, handleChange } = useFormik({
-  //   initialValues: { search: "" },
-  //   validationSchema,
-  //   onSubmit: (values) => {
-  //     console.log(values);
-  //   },
-  // });
 
   const fetchDeleteTour = async (id) => {
     try {
@@ -103,26 +94,42 @@ export default function Home({ navigation }) {
             <>
               <Spacer height={10} />
               <Searchbar
-                // right={() => (
-
-                // )}
+                right={() => (
+                  <TouchableOpacity
+                    onPress={() => {
+                      if (searchQuery) {
+                        fetchTours({
+                          search: searchQuery,
+                          level: activeSection,
+                        });
+                      }
+                    }}
+                  >
+                    <Text>Найти</Text>
+                  </TouchableOpacity>
+                )}
                 placeholder="Поиск"
                 onChangeText={setSearchQuery}
                 value={searchQuery}
               />
 
               <Spacer height={10} />
-              <HomeTabs
-                activeTab={activeSection}
-                onTabClick={setActiveSection}
-              />
-              <Spacer height={20} />
+              {!searchQuery ? (
+                <>
+                  <HomeTabs
+                    activeTab={activeSection}
+                    onTabClick={setActiveSection}
+                  />
+                  <Spacer height={20} />
+                </>
+              ) : null}
             </>
           }
           data={tours}
           renderItem={({ item }) => (
             <ListItem
               data={item}
+              isEditable={isAdmin}
               onPress={() => navigation.navigate("TourDetail", { data: item })}
               onDelete={() =>
                 deleteTourAlert(item.name, () => fetchDeleteTour(item.id))
@@ -132,12 +139,14 @@ export default function Home({ navigation }) {
           keyExtractor={(item, index) => item.id.toString()}
           ItemSeparatorComponent={<Spacer height={10} />}
         />
-        <TouchableOpacity
-          style={styles.floatingButton}
-          onPress={() => navigation.navigate("CreateTour")}
-        >
-          <Text>Добавить маршрут +</Text>
-        </TouchableOpacity>
+        {isAdmin && (
+          <TouchableOpacity
+            style={styles.floatingButton}
+            onPress={() => navigation.navigate("CreateTour")}
+          >
+            <Text>Добавить маршрут +</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </SafeAreaView>
   );

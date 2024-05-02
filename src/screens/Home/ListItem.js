@@ -4,7 +4,7 @@ import { Entypo, AntDesign } from "@expo/vector-icons";
 
 import Spacer from "../../components/Spacer";
 
-const ListItem = ({ data, onPress, onDelete, onEdit }) => {
+const ListItem = ({ data, onPress, onDelete, onEdit, isEditable }) => {
   const { description, img_url, name, price } = data;
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
@@ -29,12 +29,14 @@ const ListItem = ({ data, onPress, onDelete, onEdit }) => {
         <Text>Цена</Text>
         <Text>{price}р</Text>
       </View>
-      <TouchableOpacity onPress={() => onDelete()} style={styles.crossBtn}>
-        <Entypo name="circle-with-cross" size={32} color="purple" />
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => onEdit()} style={styles.editBtn}>
+      {!!isEditable && (
+        <TouchableOpacity onPress={() => onDelete()} style={styles.crossBtn}>
+          <Entypo name="circle-with-cross" size={32} color="purple" />
+        </TouchableOpacity>
+      )}
+      {/* <TouchableOpacity onPress={() => onEdit()} style={styles.editBtn}>
         <AntDesign name="edit" size={32} color="purple" />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </TouchableOpacity>
   );
 };

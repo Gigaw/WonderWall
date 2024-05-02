@@ -260,7 +260,7 @@ const CreateTour = ({}) => {
           {errors.level}
         </HelperText>
         <Spacer height={10} />
-        <Button mode="contained" onPress={uploadImage}>
+        <Button mode="contained" onPress={submitForm}>
           Создать тур
         </Button>
       </ScrollView>

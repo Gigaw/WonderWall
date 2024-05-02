@@ -39,24 +39,12 @@ const SignIn = ({ navigation }) => {
     onSubmit: (values) => {
       signIn({ email: values.email, password: values.password })
         .then((res) => {
-          // localStorage.set("user", JSON.stringify(res.user));
-          // localStorage.set("token", res.token);
           logIn(res.user, res.token);
+          navigation.navigate("TabNavigation");
         })
         .catch((e) => console.log(e));
     },
   });
-
-  useEffect(() => {
-    // const userJson = localStorage.getString("user");
-    // const token = localStorage.getString("token");
-    // console.log('hi', userJson, token)
-    // if (token && userJson) {
-    //   const userObject = JSON.parse(userJson);
-    //   console.log('here', userObject, token)
-    //   logIn(userObject, token);
-    // }
-  }, []);
 
   const emailError = Boolean(!!errors.email && touched.email);
   const passwordError = Boolean(!!errors.password && touched.password);

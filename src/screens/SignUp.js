@@ -28,7 +28,7 @@ const validationSchema = Yup.object().shape({
     .required(requiredText),
 });
 
-const SignUp = () => {
+const SignUp = ({ navigation }) => {
   const [passwordEyeOpened, setPasswordEyeOpened] = useState(false);
   const [passwordRepeatEyeOpened, setPasswordRepeatEyeOpened] = useState(false);
   const logIn = useAuthStore((state) => state.logIn);
@@ -43,12 +43,15 @@ const SignUp = () => {
     },
     validationSchema,
     onSubmit: ({ name, email, password, phone }) => {
-      console.log("here");
-      signUp({ name, email, password, phone }).then((res) => {
-        if (res.token) {
-          logIn(res.user, res.token);
-        }
-      });
+      signUp({ name, email, password, phone })
+        .then((res) => {
+          console.log(res);
+          if (res.token) {
+            // logIn(res.user, res.token);
+            navigation.navigate("SignIn");
+          }
+        })
+        .catch((e) => console.log(e));
     },
   });
   return (
