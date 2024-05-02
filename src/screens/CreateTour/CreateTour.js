@@ -44,7 +44,7 @@ const validationSchema = Yup.object().shape({
     .min(4, "Должно быть не короче 4 знаков")
     .required("Обязательное поле"),
 
-  level: Yup.number().required().positive().integer(),
+  level: Yup.number("Выберите уровень").required("Обязательное поле"),
 });
 
 const tourCreatedSuccessfullyAlert = () =>

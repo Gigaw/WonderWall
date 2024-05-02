@@ -36,6 +36,21 @@ const createBookingSuccessAlert = () =>
   Alert.alert("Успех", "Заявка успешно отправлена", [
     { text: "Ок", onPress: () => console.log("Да Pressed") },
   ]);
+const notAuthAlert = () =>
+  Alert.alert(
+    "Уведомление",
+    "Войдите чтобы иметь возможность подать заявку на тур",
+    [{ text: "Ок", onPress: () => console.log("Да Pressed") }]
+  );
+
+const askRequestBooking = (func) =>
+  Alert.alert(
+    "Уведомление",
+    "Вы точно хотите подать заявку на тур?",
+    [{ text: "Нет", onPress: () => console.log("Да Pressed") }][
+      { text: "Да", onPress: () => func() }
+    ]
+  );
 
 const TourDetail = ({ navigation, route }) => {
   const {
@@ -49,6 +64,7 @@ const TourDetail = ({ navigation, route }) => {
     id,
   } = route.params.data;
   const token = useAuthStore((state) => state.token);
+  const isAuth = useAuthStore((state) => state.isAuth);
   const [booking, setBooking] = useState(null);
   const statusIntoText = (statusId) => {
     switch (statusId) {
@@ -117,7 +133,13 @@ const TourDetail = ({ navigation, route }) => {
         <InfoRow name="Локация" value={location} />
         <Spacer height={100} />
         <Button
-          onPress={() => fetchCreateBooking()}
+          onPress={() => {
+            if (isAuth) {
+              askRequestBooking(fetchCreateBooking);
+            } else {
+              notAuthAlert();
+            }
+          }}
           disabled={booking !== null}
         >
           {booking === null ? "Заявка" : statusIntoText(booking.status_id)}
