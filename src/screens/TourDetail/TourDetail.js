@@ -44,13 +44,10 @@ const notAuthAlert = () =>
   );
 
 const askRequestBooking = (func) =>
-  Alert.alert(
-    "Уведомление",
-    "Вы точно хотите подать заявку на тур?",
-    [{ text: "Нет", onPress: () => console.log("Да Pressed") }][
-      { text: "Да", onPress: () => func() }
-    ]
-  );
+  Alert.alert("Уведомление", "Вы точно хотите подать заявку на тур?", [
+    { text: "Нет", onPress: () => console.log("Да Pressed") },
+    { text: "Да", onPress: () => func() },
+  ]);
 
 const TourDetail = ({ navigation, route }) => {
   const {
