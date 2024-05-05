@@ -13,7 +13,8 @@ import Spacer from "../../components/Spacer";
 import { Button } from "react-native-paper";
 import { createBooking } from "../../api/booking/create";
 import useAuthStore from "../../stores/auth";
-
+import { deleteBooking } from "../../api/booking/delete";
+import { failAlert, successAlert } from "../../utils/alerts";
 const apiURL = process.env.EXPO_PUBLIC_API_URL;
 
 const getBooking = async (tourId, token) => {
@@ -63,6 +64,8 @@ const TourDetail = ({ navigation, route }) => {
   const token = useAuthStore((state) => state.token);
   const isAuth = useAuthStore((state) => state.isAuth);
   const [booking, setBooking] = useState(null);
+  const user = useAuthStore((state) => state.user);
+  const isAdmin = isAuth && user?.role_name === "admin";
   const statusIntoText = (statusId) => {
     switch (statusId) {
       case 1:
@@ -96,7 +99,7 @@ const TourDetail = ({ navigation, route }) => {
         setBooking(null);
       }
     } catch (error) {
-      console.log(error);
+      console.log('fetchGetBooking', error);
     }
   };
 
@@ -105,6 +108,20 @@ const TourDetail = ({ navigation, route }) => {
   }, []);
 
   console.log(booking);
+
+  const cancelBooking = async () => {
+    try {
+      const response = await deleteBooking(booking.id, token);
+      if (response.ok) {
+        successAlert("Заявка успешно отменена");
+        setBooking(null);
+      } else {
+        failAlert();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -139,8 +156,16 @@ const TourDetail = ({ navigation, route }) => {
           }}
           disabled={booking !== null}
         >
-          {booking === null ? "Заявка" : statusIntoText(booking.status_id)}
+          {isAdmin ? null : (
+            <>
+              {booking === null ? "Заявка" : statusIntoText(booking.status_id)}
+            </>
+          )}
         </Button>
+        <Spacer height={10} />
+        {booking !== null && !isAdmin && isAuth ? (
+          <Button onPress={() => cancelBooking()}>Отменить заявку</Button>
+        ) : null}
         <Spacer height={10} />
       </ScrollView>
     </SafeAreaView>

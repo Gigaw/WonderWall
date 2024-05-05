@@ -21,6 +21,7 @@ import useAuthStore from "../../stores/auth";
 import useToursStore from "../../stores/tours";
 import { useFormik } from "formik";
 import { deleteTour } from "../../api/tour/delete";
+import AppBg from "../../components/AppBg";
 const windowHeight = Dimensions.get("window").height;
 // const width = Dimensions.get("window").width;
 const validationSchema = Yup.object().shape({
@@ -76,7 +77,8 @@ export default function Home({ navigation }) {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <LinearGradient
+      <AppBg />
+      {/* <LinearGradient
         colors={[
           "rgba(113,214,218,255)",
           "rgba(84,206,183,255)",
@@ -85,7 +87,7 @@ export default function Home({ navigation }) {
         ]}
         locations={[0, 0.2, 0.35, 0.6]}
         style={styles.background}
-      />
+      /> */}
       <View style={styles.container}>
         <FlatList
           style={styles.list}

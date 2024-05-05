@@ -1,8 +1,10 @@
 import React from "react";
-import { View, Text, StyleSheet, Button, SafeAreaView } from "react-native";
+import { View, StyleSheet, SafeAreaView } from "react-native";
+import { TextInput, Button, HelperText, Text } from "react-native-paper";
 
 import Spacer from "../components/Spacer";
 import useAuthStore from "../stores/auth";
+import AppBg from "../components/AppBg";
 
 export default function Profile({ navigation }) {
   const setIsAuth = useAuthStore((state) => state.setIsAuth);
@@ -10,12 +12,13 @@ export default function Profile({ navigation }) {
   const logOut = useAuthStore((state) => state.logOut);
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{ flex: 1 }}>
+      {/* <AppBg /> */}
       <View
         style={{
           paddingHorizontal: 20,
           flex: 1,
-          justifyContent: 'center'
+          justifyContent: "center",
         }}
       >
         <Spacer height={20} />
@@ -34,13 +37,23 @@ export default function Profile({ navigation }) {
           <Text style={styles.value}>{user.phone}</Text>
         </View>
         <Spacer height={100} />
-        <Button
+        {/* <Button
           title="Выйти"
           onPress={() => {
             logOut();
             navigation.navigate("SignIn");
           }}
-        />
+        /> */}
+
+        <Button
+          mode="contained"
+          onPress={() => {
+            logOut();
+            navigation.navigate("SignIn");
+          }}
+        >
+          Выйти
+        </Button>
       </View>
     </SafeAreaView>
   );
@@ -51,13 +64,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    // backgroundColor: "red",
   },
   name: {
     fontSize: 20,
     fontWeight: "600",
+    color: "purple",
   },
   value: {
     fontSize: 18,
+    color: "purple",
   },
 });

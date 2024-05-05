@@ -43,6 +43,7 @@ const SignUp = ({ navigation }) => {
     },
     validationSchema,
     onSubmit: ({ name, email, password, phone }) => {
+      console.log('here')
       signUp({ name, email, password, phone })
         .then((res) => {
           console.log(res);

@@ -41,7 +41,8 @@ export default function TabNavigation() {
         component={Profile}
         options={{
           tabBarActiveTintColor: "purple",
-
+          headerTitle: '',
+          headerShown: false,
           tabBarIcon: () => <Ionicons name="person" size={32} color="purple" />,
         }}
         listeners={({ navigation }) => ({

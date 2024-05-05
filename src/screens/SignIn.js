@@ -22,6 +22,7 @@ const SignIn = ({ navigation }) => {
   const queryClient = useQueryClient();
   const logIn = useAuthStore((state) => state.logIn);
   const setIsAuth = useAuthStore((state) => state.setIsAuth);
+  const [authError, setAuthError] = useState(null);
   // const signIn = useSignIn();
   const [passwordEyeOpened, setPasswordEyeOpened] = useState(false);
 
@@ -37,7 +38,15 @@ const SignIn = ({ navigation }) => {
     initialValues: { email: "test@test.com", password: "test1234" },
     validationSchema,
     onSubmit: (values) => {
+      setAuthError(null);
       signIn({ email: values.email, password: values.password })
+        .then((res) => {
+          if (res.ok) {
+            return res.json();
+          } else {
+            setAuthError("Неверный логин или пароль");
+          }
+        })
         .then((res) => {
           logIn(res.user, res.token);
           navigation.navigate("TabNavigation");
@@ -86,9 +95,15 @@ const SignIn = ({ navigation }) => {
           {errors.password}
         </HelperText>
         <Spacer height={10} />
+
         <Button mode="contained" onPress={() => handleSubmit()}>
           Войти
         </Button>
+        <View style={{ alignItems: "center" }}>
+          <HelperText type="error" visible={!!authError}>
+            {authError}
+          </HelperText>
+        </View>
         <Spacer height={10} />
         <Button onPress={() => navigation.navigate("SignUp")}>
           Зарегистрироваться
