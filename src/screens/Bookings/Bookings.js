@@ -21,6 +21,12 @@ const rejectedBookingAlert = () =>
     { text: "Ок", onPress: () => console.log("Да Pressed") },
   ]);
 
+const statusChangeBookingAlert = (title, onYesPress) =>
+  Alert.alert("Изменение статуса", title, [
+    { text: "Нет", onPress: () => console.log("Да Pressed") },
+    { text: "Да", onPress: () => onYesPress() },
+  ]);
+
 const Bookings = () => {
   const token = useAuthStore((state) => state.token);
   const [bookings, setBookings] = useState([]);
@@ -130,11 +136,25 @@ const Bookings = () => {
               </View>
               {item.status_name === "Pending" && (
                 <View>
-                  <TouchableOpacity onPress={() => approveBooking(item.id)}>
+                  <TouchableOpacity
+                    onPress={() =>
+                      statusChangeBookingAlert(
+                        "Вы уверены что хотите принять заявку?",
+                        () => approveBooking(item.id)
+                      )
+                    }
+                  >
                     <Text style={{ color: "green" }}>Принять</Text>
                   </TouchableOpacity>
                   <Spacer height={10} />
-                  <TouchableOpacity onPress={() => rejectBooking(item.id)}>
+                  <TouchableOpacity
+                    onPress={() =>
+                      statusChangeBookingAlert(
+                        "Вы уверены что хотите отклонить заявку?",
+                        () => rejectBooking(item.id)
+                      )
+                    }
+                  >
                     <Text style={{ color: "red" }}>Отклонить</Text>
                   </TouchableOpacity>
                 </View>
